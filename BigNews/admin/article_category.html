@@ -52,6 +52,20 @@
         </div>
     </div>
 
+    <!-- 文章分类模板 -->
+    <script id="cat_list" type="text/html">
+        {{ each data v }}
+        <tr>
+            <td>{{ v.name }}</td>
+            <td>{{ v.slug }}</td>
+            <td class="text-center">
+                <a href="javascript:void(0);" data-id="{{ v.id }}" data-toggle="modal" class=" btnbtn-info btn-xs">编辑</a>
+                <a href="javascript:void(0);" data-id="{{ v.id }}" class="btn btn-danger btn-xs">删除</a>
+            </td>
+        </tr>
+        {{ /each }}
+    </script>
+
     <script src="./libs/http.js"></script>
     <script>
         //入口函数
