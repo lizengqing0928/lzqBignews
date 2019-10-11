@@ -13,6 +13,8 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 引入模板引擎js文件 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 分页插件 -->
+    <script src="./libs/jquery.twbsPagination.js"></script>
 </head>
 
 <body>
@@ -72,6 +74,84 @@
             </div>
         </div>
     </div>
+
+    <!-- 文章分类模板 -->
+    <script id="cat_list" type="text/html">
+        <option value="">所有分类</option>
+        {{ each data v }}
+        <option value="{{ v.id }}">{{ v.name  }}</option>
+        {{ /each }}
+    </script>
+
+    <script src="./libs/http.js"></script>
+    <script>
+        //入口函数
+        $(function(){
+            /* 0.页面一加载: 默认请求所有的分类列表 */
+            $.ajax({
+                url:BigNew.category_list,
+                type:'get',
+                dataType:'json',
+                success: function(backData){
+                    console.log(backData);
+                    //数据响应之后 模板引擎渲染页面
+                    $('#selCategory').html(template('cat_list',backData));                    
+                }
+            });
+
+            /* 1.页面一加载: 默认请求文章列表数据 */
+
+            /* 2.筛选按钮点击事件 
+                筛选按钮: #btnSearch
+                    注意点: 表单按钮阻止默认行为
+                文章类别下拉菜单 :  #selCategory
+                文章状态下拉菜单 :  #selStatus
+            */
+           $('#btnSearch').click(function(e){
+               //2.1 阻止默认跳转
+               e.preventDefault();
+               //2.2 ajax请求
+               getArticleList(1,true);
+           });
+
+           //主动触发筛选按钮点击事件
+           $('#btnSearch').trigger('click');
+
+           /**
+           * @description:加载分页插件
+           * @param {type} 
+           * @return: tocalPage : 总页数
+           * @return: startPage : 起始页数
+           */
+          function loadPagination(totalPage,startPage){
+              //初始化分页插件
+              //(1)先销毁已经存在的插件
+              $('#pagination').twbsPagination('destroy');
+              //(2)初始化新的插件
+              $('#pagination').twbsPagination({
+                totalPage:totalPage, //总页数
+                startPage:startPage, //起始页数
+                visiblePages: 6, //可见页数
+                first: '首页',
+                prev: '上一页',
+                next: '下一页',
+                last: '尾页',
+                onPageClick: function(event,page) {
+                    /*
+                    */
+
+                    //只有点击的页数和当前页数不一致才请求数据
+                    if(startPage != page) {
+                        getArticleList(page);
+                    }
+                    console.log(page);
+                }
+              })
+          }
+
+        });
+    
+    </script>
 </body>
 
 </html>
