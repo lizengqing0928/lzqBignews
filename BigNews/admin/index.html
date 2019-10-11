@@ -104,7 +104,12 @@
                }else{ //点击其他一级菜单,取消二级菜单高亮
                    $('.level02>li').removeClass('active');
                }
-           })
+           });
+           /* 4.二级菜单点击事件 */
+           $('.level02>li').click(function(){
+                //4.1 排他思想修改样式
+                $(this).addClass('active').siblings().removeClass('active');
+           });
             // //(1).实例化ajax对象
             // var xhr = new XMLHttpRequest();
             // //(2).设置请求方法和地址
