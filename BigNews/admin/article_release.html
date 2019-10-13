@@ -103,13 +103,13 @@
 
         /* 1. 页面一加载: 渲染所有的分类列表 */
         $.ajax({
-            url:BigNew.category_list,
-            type:'get',
-            dataType:'json',
-            success: function(backData){
+            url: BigNew.category_list,
+            type: 'get',
+            dataType: 'json',
+            success: function (backData) {
                 console.log(backData);
                 //数据响应之后 模板引擎渲染页面
-                $('.category').html(template('cat_list',backData));
+                $('.category').html(template('cat_list', backData));
             }
         });
 
@@ -127,7 +127,58 @@
         /* 3.发布文章: 文件上传 
         注意点: 表单按钮需要阻止默认行为
         */
-    
+        //4.1 发布
+        $('btn-release').click(function (e) {
+            e.preventDefault();
+            articleEdit('已发布');
+        });
+
+        //4.2 存为草稿
+        $('.btn-draft').click(function (e) {
+            e.preventDefault();
+            articleEdit('草稿');
+        });
+
+        /**
+        * @description: 编辑文章
+        * @param {type}  state : 已发布 草稿
+        * @return: 
+        */
+        function articleEdit(state) {
+            //创建FormData对象：参数是表单dom对象
+            var fd = new FormData($('#form')[0]);
+            /* 注意点
+                  1.formdata只能捕捉form表单中有name属性的input的value值
+                  2.如果接口文档参数 > form能够捕捉的参数数量
+                  3.可以手动使用 append() 方法追加参数
+              
+              经典bug : 如果input表单有name属性, 此时 formdata使用append追加了相同参数
+              formdata是不会覆盖的,而是两个参数值 作为数组 传递给服务器
+            */
+
+            //追加参数
+            fd.append('state', state);
+            fd.append('content', tinymce.activeEditor.getContent());
+
+            $.ajax({
+                url: BigNew.article_publish,
+                type: 'post',
+                dataType: 'json',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function (backData) {
+                    console.log(backData);
+                    if (backData.code == 200) {
+                        alert('发布成功');
+                        //返回上一页
+                        window.history.back();
+                    }
+                }
+            });
+
+        }
+
     </script>
 </body>
 
