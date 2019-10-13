@@ -62,7 +62,7 @@
                         <div class="jeitem">
                             <!-- 日期插件 -->
                             <div class="jeinpbox">
-                                <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
+                                <input type="text" name="date" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
                                 <div class="icons jebtns"
                                     onclick="jeDate('#testico',{theme:{bgcolor:'#00A680',pnColor:'#00DDAA'},trigger:false,format: 'YYYY-MM-DD'})">
                                 </div>
@@ -185,10 +185,13 @@
                  1.formdata只能捕捉form表单中有name属性的input的value值
                  2.如果接口文档参数 > form能够捕捉的参数数量
                  3.可以手动使用 append() 方法追加参数
+
+            经典bug : 如果input表单有name属性, 此时 formdata使用append追加了相同参数
+            formdata是不会覆盖的,而是两个参数值 作为数组 传递给服务器
             */
             //追加参数
             fd.append('id', id);
-            fd.append('date', $('#testico').val());
+            // fd.append('date', $('#testico').val());
             fd.append('state', state);
             fd.append('content', tinymce.activeEditor.getContent());
 
