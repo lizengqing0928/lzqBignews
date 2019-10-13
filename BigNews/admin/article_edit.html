@@ -14,6 +14,14 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 模板引擎 -->
     <script src="./libs/template-web.js"></script>
+    <!-- jedate -->
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate-test.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jedate.css">
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <!-- tinymce -->
+    <script src="./libs/tinymce/tinymce.min.js"></script>
+    <!-- jedate + tinymce配置文件 -->
+    <script src="./libs/config.js"></script>
 </head>
 
 <body>
@@ -51,11 +59,22 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
+                        <div class="jeitem">
+                            <!-- 日期插件 -->
+                            <div class="jeinpbox">
+                                <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
+                                <div class="icons jebtns"
+                                    onclick="jeDate('#testico',{theme:{bgcolor:'#00A680',pnColor:'#00DDAA'},trigger:false,format: 'YYYY-MM-DD'})">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
+                        <!-- tinymce -->
+                        <textarea id="mytextarea" name="mytextarea" style="height: 350px">文章内容</textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -67,6 +86,47 @@
             </form>
         </div>
     </div>
+
+    <script src="./libs/http.js"></script>
+    <script>
+        /* 布局
+        1. jeDate日期插件
+        2. tinyMCE插件        
+        */
+
+        /* 0. 页面一加载: 渲染所有的分类列表 */
+        $.ajax({
+            url:BigNew.category_list,
+            type:'get',
+            dataType:'json',           
+            success: function(backData){
+                console.log(backData);
+                //数据响应之后 模板引擎渲染页面
+                $('.category').html(template('cat_list',backData));
+            }
+        });
+
+        /* 1.获取从article_list页面传递过来的参数: 文章 id */
+        var id = window.location.href.split('=')[1];
+        console.log(id);
+
+        /* 2.通过id查询文章详细信息 */
+        $.ajax({
+            url:BigNew.article_search,
+            type:'get',
+            dataType:'json',
+            data: { id: id },
+            success: function(backData){
+                console.log(backDate);
+                //渲染文章详情
+                $('.title').val(backData.data.title);
+                $('.category').val(backData.data.categoryId);
+                $('.article_cover').attr('src',backData.data.cover);
+                $('#testico').val(backData.data.date);
+            }
+        });
+    
+    </script>
 </body>
 
 </html>
