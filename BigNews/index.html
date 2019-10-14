@@ -269,6 +269,18 @@
         {{ /each }}
     </script>
 
+    <!-- 04-热门排行 -->
+    <script id="rank_list" type="text/html">
+        {{ each data v }}
+        <li><span class="first">1</span><a href="./article.html?id={{ v.id }}">{{  v.title }}</a></li>
+        {{ /each }}
+    </script>
+
+    <!-- 05-焦点关注 -->
+
+
+    <!-- 06-最新评论 -->
+
     <script>
     //入口函数
     $(function(){
@@ -302,6 +314,28 @@
             success: function(backData){
                 console.log(backData);
                 $('.common_news').html(template('latest_list',backData));
+            }
+        });
+
+        //4.热门排行
+        $.ajax({
+            url:'http://localhost:8080/api/v1/index/rank',
+            type:'get',
+            dataType:'json',
+            success: function(backData){
+                console.log(backData);
+                $('.hotrank_list').html(template('rank_list',backData));
+            }
+        });
+
+        //5.最新评论
+        $.ajax({
+            url:'http://localhost:8080/api/v1/index/latest_comment',
+            type:'get',
+            dataType:'json',
+            success: function(backData){
+                console.log(backData);
+                $('.comment_list').html(template('comment_list',backData));
             }
         });
     });
